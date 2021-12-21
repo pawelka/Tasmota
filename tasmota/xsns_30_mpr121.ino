@@ -63,112 +63,111 @@
 
 /** ELEC0-11 Maximum Half Delta Rising Register. */
 #define MPR121_MHDR_REG  0x2B
-
 /** ELEC0-11 Maximum Half Delta Rising Value. */
 #define MPR121_MHDR_VAL  0x01
 
 /** ELEC0-11 Noise Half Delta Falling Register. */
 #define MPR121_NHDR_REG  0x2C
-
 /** ELEC0-11 Noise Half Delta Falling Value. */
 #define MPR121_NHDR_VAL  0x01
 
 /** ELEC0-11 Noise Count Limit Rising Register. */
 #define MPR121_NCLR_REG  0x2D
-
 /** ELEC0-11 Noise Count Limit Rising Value. */
-#define MPR121_NCLR_VAL  0x0E
+#define MPR121_NCLR_VAL  0x10
+
+//FDLR
 
 /** ELEC0-11 Maximum Half Delta Falling Register. */
 #define MPR121_MHDF_REG  0x2F
-
 /** ELEC0-11 Maximum Half Delta Falling Value. */
 #define MPR121_MHDF_VAL  0x01
 
 /** ELEC0-11 Noise Half Delta Falling Register. */
 #define MPR121_NHDF_REG  0x30
-
 /** ELEC0-11 Noise Half Delta Falling Value. */
-#define MPR121_NHDF_VAL  0x05
+#define MPR121_NHDF_VAL  0x01
 
 /** ELEC0-11 Noise Count Limit Falling Register. */
 #define MPR121_NCLF_REG  0x31
-
 /** ELEC0-11 Noise Count Limit Falling Value. */
-#define MPR121_NCLF_VAL  0x01
+#define MPR121_NCLF_VAL  0x10
 
 /** Proximity Maximum Half Delta Rising Register. */
 #define MPR121_MHDPROXR_REG  0x36
-
 /** Proximity Maximum Half Delta Rising Value. */
-#define MPR121_MHDPROXR_VAL  0x3F
+#define MPR121_MHDPROXR_VAL  0x0F
 
 /** Proximity Noise Half Delta Rising Register. */
 #define MPR121_NHDPROXR_REG  0x37
-
 /** Proximity Noise Half Delta Rising Value. */
-#define MPR121_NHDPROXR_VAL  0x5F
+#define MPR121_NHDPROXR_VAL  0x0F
 
 /** Proximity Noise Count Limit Rising Register. */
 #define MPR121_NCLPROXR_REG  0x38
-
 /** Proximity Noise Count Limit Rising Value. */
-#define MPR121_NCLPROXR_VAL  0x04
+#define MPR121_NCLPROXR_VAL  0x00
 
 /** Proximity Filter Delay Count Limit Rising Register. */
 #define MPR121_FDLPROXR_REG  0x39
-
 /** Proximity Filter Delay Count Limit Rising Value. */
 #define MPR121_FDLPROXR_VAL  0x00
 
 /** Proximity Maximum Half Delta Falling Register. */
 #define MPR121_MHDPROXF_REG  0x3A
-
 /** Proximity Maximum Half Delta Falling Value. */
 #define MPR121_MHDPROXF_VAL  0x01
 
 /** Proximity Noise Half Delta Falling Register. */
 #define MPR121_NHDPROXF_REG  0x3B
-
 /** Proximity Noise Half Delta Falling Value. */
-#define MPR121_NHDPROXF_VAL  0x01
+#define MPR121_NHDPROXF_VAL  0x00
 
 /** Proximity Noise Count Limit Falling Register. */
 #define MPR121_NCLPROXF_REG  0x3C
-
 /** Proximity Noise Count Limit Falling Value. */
-#define MPR121_NCLPROXF_VAL  0x1F
+#define MPR121_NCLPROXF_VAL  0x00
 
 /** Proximity Filter Delay Count Limit Falling Register. */
 #define MPR121_FDLPROXF_REG  0x3D
-
 /** Proximity Filter Delay Count Limit Falling Value. */
-#define MPR121_FDLPROXF_VAL  0x04
+#define MPR121_FDLPROXF_VAL  0x00
+
+/** Debounce touch & release Register. */
+#define MPR121_DEBOUNCE_REG  0x5B
+/** Debounce touch & release Value. */
+#define MPR121_DEBOUNCE_VAL  0x11
+
 
 /** First Electrode Touch Threshold Register. */
 #define MPR121_E0TTH_REG  0x41
 
 /** First Electrode Touch Threshold Value. */
-#define MPR121_E0TTH_VAL  12
+#define MPR121_E0TTH_VAL  40
 
 /** First Electrode Release Threshold Register. */
 #define MPR121_E0RTH_REG  0x42
 
 /** First Electrode Release Threshold Value. */
-#define MPR121_E0RTH_VAL  6
+#define MPR121_E0RTH_VAL  20
 
-/** Global CDC/CDT Configuration Register. */
-#define MPR121_CDT_REG  0x5D
+/** Global AFE Configuration 1 Register. */
+#define MPR121_AFE_CONFIG_1_REG  0x5C
 
-/** Global CDC/CDT Configuration Value. */
-#define MPR121_CDT_VAL  0x20
+/** Global AFE Configuration 1 Value. */
+#define MPR121_AFE_CONFIG_1_VAL  0xFF
+
+/** Global AFE Configuration 2 Register. */
+#define MPR121_AFE_CONFIG_2_REG  0x5D
+
+/** Global AFE Configuration 2 Value. */
+#define MPR121_AFE_CONFIG_2_VAL  0x30
 
 /** Enable electrodes Register. */
 #define MPR121_ECR_REG  0x5E
 
 /** Enable electrodes Value. */
-#define MPR121_ECR_VAL  0x8F	// Start ELE0-11 with first 5 bits of baseline tracking
-//#define MPR121_ECR_VAL  0xBF  // Start ELE0-11 + proximity with first 5 bits of baseline tracking
+#define MPR121_ECR_VAL  0xC1	//only first sensor
 
 /** Soft-reset Register. */
 #define MPR121_SRST_REG 0x80
@@ -284,8 +283,11 @@ void Mpr121Init(struct mpr121 *pS, bool initial)
 			// Proximity Filter Delay Count Limit Falling
 			I2cWrite8(pS->i2c_addr[i], MPR121_FDLPROXF_REG, MPR121_FDLPROXF_VAL);
 
-			// Global CDC/CDT Configuration
-			I2cWrite8(pS->i2c_addr[i], MPR121_CDT_REG, MPR121_CDT_VAL);
+			// Global AFE Configuration 1
+			I2cWrite8(pS->i2c_addr[i], MPR121_AFE_CONFIG_1_REG, MPR121_AFE_CONFIG_1_VAL);
+
+			// Global AFE Configuration 2 
+			I2cWrite8(pS->i2c_addr[i], MPR121_AFE_CONFIG_2_REG, MPR121_AFE_CONFIG_2_VAL);
 
 			// Enable sensor
 			I2cWrite8(pS->i2c_addr[i], MPR121_ECR_REG, MPR121_ECR_VAL);
@@ -356,7 +358,7 @@ void Mpr121Show(struct mpr121 *pS, uint8_t function)
 				ResponseAppend_P(PSTR(",\"MPR121%c\":{"), pS->id[i]);
 			}
 			// Loop through buttons
-			for (uint32_t j = 0; j < 13; j++) {
+			for (uint32_t j = 0; j < 1; j++) {
 
 				// Add sensor, button and state to MQTT JSON message string
 				if ((FUNC_EVERY_50_MSECOND == function)
